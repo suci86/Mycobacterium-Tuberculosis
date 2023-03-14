@@ -1,0 +1,32 @@
+#clone YOLOv5 
+!git clone https://github.com/ultralytics/yolov5  # clone repo
+%cd yolov5
+%pip install -qr requirements.txt # install dependencies
+%pip install -q roboflow
+
+import torch
+import os
+from IPython.display import Image, clear_output  # to display images
+
+print(f"Setup complete. Using torch {torch.__version__} ({torch.cuda.get_device_properties(0).name if torch.cuda.is_available() else 'CPU'})")
+
+# set up environment
+os.environ["DATASET_DIRECTORY"] = "/content/datasets"
+
+from psutil import virtual_memory
+ram_gb = virtual_memory().total / 1e9
+print('Your runtime has {:.1f} gigabytes of available RAM\n'.format(ram_gb))
+
+if ram_gb < 20:
+  print('Not using a high-RAM runtime')
+else:
+  print('You are using a high-RAM runtime!')
+
+gpu_info = !nvidia-smi
+gpu_info = '\n'.join(gpu_info)
+if gpu_info.find('failed') >= 0:
+  print('Not connected to a GPU')
+else:
+  print(gpu_info)
+  
+  !python detect.py --weights /content/drive/MyDrive/dataset/Model/Model_yolov5l6_640_32_3200/best.pt --img 616 --conf 0.1 --source /content/drive/MyDrive/wadidaw/Done_test_SK2_SK3
